@@ -23,30 +23,34 @@ namespace crimson {
     namespace dmc = crimson::dmclock;
     namespace sim = crimson::qos_simulation;
 
-    struct DmcAccum {
-      uint64_t reservation_count = 0;
-      uint64_t proportion_count = 0;
-    };
+    template<typename TRKR>
+    class DmcSimulator {
 
-    using DmcQueue = dmc::PushPriorityQueue<ClientId,sim::TestRequest>;
-    using DmcServiceTracker = dmc::ServiceTracker<ServerId,dmc::BorrowingTracker>;
+      struct DmcAccum {
+	uint64_t reservation_count = 0;
+	uint64_t proportion_count = 0;
+      };
 
-    using DmcServer = sim::SimulatedServer<DmcQueue,
-					   dmc::ReqParams,
-					   dmc::PhaseType,
-					   DmcAccum>;
+      using DmcQueue = dmc::PushPriorityQueue<ClientId,sim::TestRequest>;
+      using DmcServiceTracker = dmc::ServiceTracker<ServerId,TRKR>;
 
-    using DmcClient = sim::SimulatedClient<DmcServiceTracker,
-					   dmc::ReqParams,
-					   dmc::PhaseType,
-					   DmcAccum>;
+      using DmcServer = sim::SimulatedServer<DmcQueue,
+					     dmc::ReqParams,
+					     dmc::PhaseType,
+					     DmcAccum>;
 
-    using CreateQueueF = std::function<DmcQueue*(DmcQueue::CanHandleRequestFunc,
-						 DmcQueue::HandleRequestFunc)>;
+      using DmcClient = sim::SimulatedClient<DmcServiceTracker,
+					     dmc::ReqParams,
+					     dmc::PhaseType,
+					     DmcAccum>;
 
-    using MySim = sim::Simulation<ServerId,ClientId,DmcServer,DmcClient>;
+      using CreateQueueF = std::function<DmcQueue*(DmcQueue::CanHandleRequestFunc,
+						   DmcQueue::HandleRequestFunc)>;
 
-    using SubmitFunc = DmcClient::SubmitFunc;
+      using MySim = sim::Simulation<ServerId,ClientId,DmcServer,DmcClient>;
+
+      using SubmitFunc = DmcClient::SubmitFunc;
+    }; // DmcSimulator
 
     extern void dmc_server_accumulate_f(DmcAccum& a,
 					const dmc::PhaseType& phase);
