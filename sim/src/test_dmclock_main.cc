@@ -125,7 +125,8 @@ int main(int argc, char* argv[]) {
       return i;
     };
 
-    auto client_info_f = [=](const ClientId& c) -> const test::dmc::ClientInfo* {
+    auto client_info_f =
+      [=](const ClientId& c) -> const test::dmc::ClientInfo* {
       return &client_info[ret_client_group_f(c)];
     };
 
@@ -143,12 +144,16 @@ int main(int argc, char* argv[]) {
 
     // lambda to post a request to the identified server; called by client
     test::SubmitFunc server_post_f =
-        [&simulation](const ServerId& server,
-                      sim::TestRequest&& request,
-                      const ClientId& client_id,
-                      const test::dmc::ReqParams& req_params) {
-        test::DmcServer& s = simulation->get_server(server);
-        s.post(std::move(request), client_id, req_params);
+      [&simulation,
+       &cli_group,
+       &ret_client_group_f](const ServerId& server,
+			    sim::TestRequest&& request,
+			    const ClientId& client_id,
+			    const test::dmc::ReqParams& req_params) {
+      test::DmcServer& s = simulation->get_server(server);
+      uint64_t request_cost =
+      cli_group[ret_client_group_f(client_id)].client_req_cost;
+      s.post(std::move(request), client_id, req_params, request_cost);
     };
 
     std::vector<std::vector<sim::CliInst>> cli_inst;
@@ -175,10 +180,12 @@ int main(int argc, char* argv[]) {
         [&simulation](ClientId client_id,
                       const sim::TestResponse& resp,
                       const ServerId& server_id,
-                      const dmc::PhaseType& phase) {
+                      const dmc::PhaseType& phase,
+		      uint64_t request_cost) {
         simulation->get_client(client_id).receive_response(resp,
                                                            server_id,
-                                                           phase);
+                                                           phase,
+							   request_cost);
     };
 
     test::CreateQueueF create_queue_f =

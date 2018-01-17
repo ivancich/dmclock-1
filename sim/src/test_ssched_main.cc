@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
 		  const ClientId& client_id,
 		  const ssched::ReqParams& req_params) {
     auto& server = simulation->get_server(server_id);
-    server.post(std::move(request), client_id, req_params);
+    server.post(std::move(request), client_id, req_params, 1u);
   };
 
   static std::vector<sim::CliInst> no_wait =
@@ -104,10 +104,12 @@ int main(int argc, char* argv[]) {
     [&simulation](ClientId client_id,
 		  const sim::TestResponse& resp,
 		  const ServerId& server_id,
-		  const ssched::NullData& resp_params) {
+		  const ssched::NullData& resp_params,
+		  uint64_t request_cost) {
     simulation->get_client(client_id).receive_response(resp,
 						       server_id,
-						       resp_params);
+						       resp_params,
+						       request_cost);
   };
 
   test::CreateQueueF create_queue_f =

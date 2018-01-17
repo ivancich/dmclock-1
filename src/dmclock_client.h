@@ -45,7 +45,7 @@ namespace crimson {
     public:
 
       OrigTracker(Counter global_delta,
-		 Counter global_rho) :
+		  Counter global_rho) :
 	delta_prev_req(global_delta),
 	rho_prev_req(global_rho),
 	my_delta(0),
@@ -68,12 +68,13 @@ namespace crimson {
 
       inline void resp_update(PhaseType phase,
 			      Counter& the_delta,
-			      Counter& the_rho) {
-	++the_delta;
-	++my_delta;
+			      Counter& the_rho,
+			      Counter cost) {
+	the_delta += cost;
+	my_delta += cost;
 	if (phase == PhaseType::reservation) {
-	  ++the_rho;
-	  ++my_rho;
+	  the_rho += cost;
+	  my_rho += cost;
 	}
       }
 
@@ -139,10 +140,11 @@ namespace crimson {
 
       inline void resp_update(PhaseType phase,
 			      Counter& the_delta,
-			      Counter& the_rho) {
-	++the_delta;
+			      Counter& the_rho,
+			      Counter cost) {
+	the_delta += cost;
 	if (phase == PhaseType::reservation) {
-	  ++the_rho;
+	  the_rho += cost;
 	}
       }
 
@@ -152,9 +154,55 @@ namespace crimson {
     }; // struct BorrowingTracker
 
 
-    // S is server identifier type
-    // T is the server info class that adheres to ServerTrackerIfc interface
-    template<typename S, typename T = BorrowingTracker>
+    // SimpleTracker...
+    class SimpleTracker {
+      Counter delta_prev_req;
+      Counter rho_prev_req;
+
+    public:
+
+      SimpleTracker(Counter global_delta, Counter global_rho) :
+	delta_prev_req(global_delta),
+	rho_prev_req(global_rho)
+      { /* empty */ }
+
+      static inline SimpleTracker create(Counter the_delta,
+					 Counter the_rho) {
+	return SimpleTracker(the_delta, the_rho);
+      }
+
+      inline ReqParams prepare_req(Counter& the_delta, Counter& the_rho) {
+	assert(the_delta >= delta_prev_req && the_rho >= rho_prev_req);
+	Counter delta_out = the_delta - delta_prev_req;
+	Counter rho_out = the_rho - rho_prev_req;
+	delta_prev_req = the_delta;
+	rho_prev_req = the_rho;
+	return ReqParams(uint64_t(delta_out), uint64_t(rho_out));
+      }
+
+      inline void resp_update(PhaseType phase,
+			      Counter& the_delta,
+			      Counter& the_rho,
+			      Counter cost) {
+	the_delta += cost;
+	if (phase == PhaseType::reservation) {
+	  the_rho += cost;
+	}
+      }
+
+      inline Counter get_last_delta() const {
+	return delta_prev_req;
+      }
+    }; // struct SimpleTracker
+
+
+    /*
+     * S is server identifier type
+     *
+     * T is the server info class that adheres to ServerTrackerIfc
+     * interface
+     */
+    template<typename S, typename T = SimpleTracker>
     class ServiceTracker {
       // we don't want to include gtest.h just for FRIEND_TEST
       friend class dmclock_client_server_erase_Test;
@@ -210,9 +258,11 @@ namespace crimson {
 
 
       /*
-       * Incorporates the RespParams received into the various counter.
+       * Incorporates the response data received into the counters.
        */
-      void track_resp(const S& server_id, const PhaseType& phase) {
+      void track_resp(const S& server_id,
+		      const PhaseType& phase,
+		      Counter request_cost = 1u) {
 	DataGuard g(data_mtx);
 
 	auto it = server_map.find(server_id);
@@ -224,7 +274,7 @@ namespace crimson {
 				      T::create(delta_counter, rho_counter));
 	  it = i.first;
 	}
-	it->second.resp_update(phase, delta_counter, rho_counter);
+	it->second.resp_update(phase, delta_counter, rho_counter, request_cost);
       }
 
       /*

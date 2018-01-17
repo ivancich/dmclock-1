@@ -33,20 +33,20 @@ namespace crimson {
 
     struct ReqParams {
       // count of all replies since last request; MUSTN'T BE 0
-      uint32_t delta;
+      uint64_t delta;
 
       // count of reservation replies since last request; MUSTN'T BE 0
-      uint32_t rho;
+      uint64_t rho;
 
-      ReqParams(uint32_t _delta, uint32_t _rho) :
+      ReqParams(uint64_t _delta, uint64_t _rho) :
 	delta(_delta),
 	rho(_rho)
       {
-	assert(0 != delta && 0 != rho && rho <= delta);
+	assert(rho <= delta);
       }
 
       ReqParams() :
-	ReqParams(1, 1)
+	ReqParams(0, 0)
       {
 	// empty
       }
