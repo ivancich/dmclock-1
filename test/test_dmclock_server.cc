@@ -853,7 +853,7 @@ namespace crimson {
 
       QueueRef pq(new Queue(client_info_f, false));
 
-      ReqParams req_params(1,1);
+      ReqParams req_params(0, 0);
 
       // make sure all times are well before now
       auto start_time = dmc::get_time() - 100.0;
