@@ -97,7 +97,8 @@ namespace crimson {
       auto server_ready_f = [] () -> bool { return true; };
       auto submit_req_f = [] (const ClientId& c,
 			      std::unique_ptr<Request> req,
-			      dmc::PhaseType phase) {
+			      dmc::PhaseType phase,
+			      uint64_t req_cost) {
 	// empty; do nothing
       };
 

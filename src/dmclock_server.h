@@ -946,10 +946,12 @@ namespace crimson {
       template<typename C1, IndIntruHeapData ClientRec::*C2, typename C3>
       void pop_process_request(IndIntruHeap<C1, ClientRec, C2, C3, B>& heap,
 			       std::function<void(const C& client,
+						  uint64_t cost,
 						  RequestRef& request)> process) {
 	// gain access to data
 	ClientRec& top = heap.top();
 
+	uint64_t request_cost = top.next_request().tag.cost;
 	RequestRef request = std::move(top.next_request().request);
 #ifndef DO_NOT_DELAY_TAG_CALC
 	RequestTag tag = top.next_request().tag;
@@ -982,7 +984,7 @@ namespace crimson {
 	ready_heap.demote(top);
 
 	// process
-	process(top.client, request);
+	process(top.client, request_cost, request);
       } // pop_process_request
 
 
@@ -1173,9 +1175,10 @@ namespace crimson {
       // When a request is pulled, this is the return type.
       struct PullReq {
 	struct Retn {
-	  C                           client;
-	  typename super::RequestRef  request;
-	  PhaseType                   phase;
+	  C                          client;
+	  typename super::RequestRef request;
+	  PhaseType                  phase;
+	  uint64_t                   cost;
 	};
 
 	typename super::NextReqType   type;
@@ -1336,18 +1339,23 @@ namespace crimson {
 	auto process_f =
 	  [&] (PullReq& pull_result, PhaseType phase) ->
 	  std::function<void(const C&,
+			     uint64_t,
 			     typename super::RequestRef&)> {
 	  return [&pull_result, phase](const C& client,
+				       uint64_t request_cost,
 				       typename super::RequestRef& request) {
-	    pull_result.data =
-	    typename PullReq::Retn{client, std::move(request), phase};
+	    pull_result.data = typename PullReq::Retn{ client,
+						       std::move(request),
+						       phase,
+						       request_cost };
 	  };
 	};
 
 	switch(next.heap_id) {
 	case super::HeapId::reservation:
 	  super::pop_process_request(this->resv_heap,
-				     process_f(result, PhaseType::reservation));
+				     process_f(result,
+					       PhaseType::reservation));
 	  ++this->reserv_sched_count;
 	  break;
 	case super::HeapId::ready:
@@ -1398,7 +1406,7 @@ namespace crimson {
       // a function to submit a request to the server; the second
       // parameter is a callback when it's completed
       using HandleRequestFunc =
-	std::function<void(const C&,typename super::RequestRef,PhaseType)>;
+	std::function<void(const C&,typename super::RequestRef,PhaseType,uint64_t)>;
 
     protected:
 
@@ -1556,9 +1564,10 @@ namespace crimson {
 	super::pop_process_request(heap,
 				   [this, phase, &client_result]
 				   (const C& client,
+				    uint64_t request_cost,
 				    typename super::RequestRef& request) {
 				     client_result = client;
-				     handle_f(client, std::move(request), phase);
+				     handle_f(client, std::move(request), phase, request_cost);
 				   });
 	return client_result;
       }

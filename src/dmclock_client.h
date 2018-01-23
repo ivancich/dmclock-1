@@ -255,7 +255,8 @@ namespace crimson {
        */
       void track_resp(const S& server_id,
 		      const PhaseType& phase,
-		      Counter cost = 1) {
+#warning Remove default value of argument?
+		      Counter request_cost = 1) {
 	DataGuard g(data_mtx);
 
 	auto it = server_map.find(server_id);
@@ -267,7 +268,7 @@ namespace crimson {
 				      T::create(delta_counter, rho_counter));
 	  it = i.first;
 	}
-	it->second.resp_update(phase, delta_counter, rho_counter, cost);
+	it->second.resp_update(phase, delta_counter, rho_counter, request_cost);
       }
 
       /*
