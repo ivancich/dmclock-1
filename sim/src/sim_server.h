@@ -28,13 +28,16 @@ namespace crimson {
 	ClientId                     client;
 	std::unique_ptr<TestRequest> request;
 	RespPm                       additional;
+	uint64_t                     request_cost;
 
 	QueueItem(const ClientId&                _client,
 		  std::unique_ptr<TestRequest>&& _request,
-		  const RespPm&                  _additional) :
+		  const RespPm&                  _additional,
+		  uint64_t                       _request_cost) :
 	  client(_client),
 	  request(std::move(_request)),
-	  additional(_additional)
+	  additional(_additional),
+	  request_cost(_request_cost)
 	{
 	  // empty
 	}
@@ -98,7 +101,7 @@ namespace crimson {
 
       using CanHandleRequestFunc = std::function<bool(void)>;
       using HandleRequestFunc =
-	std::function<void(const ClientId&,std::unique_ptr<TestRequest>,const RespPm&)>;
+	std::function<void(const ClientId&,std::unique_ptr<TestRequest>,const RespPm&, uint64_t)>;
       using CreateQueueF = std::function<Q*(CanHandleRequestFunc,HandleRequestFunc)>;
 					
 
@@ -115,7 +118,8 @@ namespace crimson {
 						 this,
 						 std::placeholders::_1,
 						 std::placeholders::_2,
-						 std::placeholders::_3))),
+						 std::placeholders::_3,
+						 std::placeholders::_4))),
 	client_resp_f(_client_resp_f),
 	iops(_iops),
 	thread_pool_size(_thread_pool_size),
@@ -174,13 +178,15 @@ namespace crimson {
 
       void inner_post(const ClientId& client,
 		      std::unique_ptr<TestRequest> request,
-		      const RespPm& additional) {
+		      const RespPm& additional,
+		      uint64_t request_cost) {
 	Lock l(inner_queue_mtx);
 	assert(!finishing);
 	accum_f(accumulator, additional);
 	inner_queue.emplace_back(QueueItem(client,
 					   std::move(request),
-					   additional));
+					   additional,
+					   request_cost));
 	inner_queue_cv.notify_one();
       }
 

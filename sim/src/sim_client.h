@@ -105,6 +105,7 @@ namespace crimson {
 	TestResponse response;
 	ServerId     server_id;
 	RespPm       resp_params;
+	uint64_t     request_cost;
       };
 
       const ClientId id;
@@ -195,9 +196,11 @@ namespace crimson {
 
       void receive_response(const TestResponse& resp,
 			    const ServerId& server_id,
-			    const RespPm& resp_params) {
+			    const RespPm& resp_params,
+			    uint64_t request_cost) {
 	RespGuard g(mtx_resp);
-	resp_queue.push_back(RespQueueItem{resp, server_id, resp_params});
+	resp_queue.push_back(
+	  RespQueueItem{ resp, server_id, resp_params, request_cost });
 	cv_resp.notify_one();
       }
 
@@ -293,7 +296,7 @@ namespace crimson {
 	    time_stats(internal_stats.mtx,
 		       internal_stats.track_resp_time,
 		       [&](){
-			 service_tracker.track_resp(item.server_id, item.resp_params);
+			 service_tracker.track_resp(item.server_id, item.resp_params, item.request_cost);
 		       });
 	    count_stats(internal_stats.mtx,
 			internal_stats.track_resp_count);

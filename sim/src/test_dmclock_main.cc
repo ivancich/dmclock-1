@@ -168,10 +168,12 @@ int main(int argc, char* argv[]) {
         [&simulation](ClientId client_id,
                       const sim::TestResponse& resp,
                       const ServerId& server_id,
-                      const dmc::PhaseType& phase) {
+                      const dmc::PhaseType& phase,
+		      uint64_t request_cost) {
         simulation->get_client(client_id).receive_response(resp,
                                                            server_id,
-                                                           phase);
+                                                           phase,
+							   request_cost);
     };
 
     test::CreateQueueF create_queue_f =

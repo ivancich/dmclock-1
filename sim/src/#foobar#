@@ -1,0 +1,8 @@
+/home2/ivancich/dmclock/simulation/sim/src/sim_server.h:111:7: note:   no known conversion for argument 6 from
+‘crimson::test_dmc::CreateQueueF
+{aka std::function<crimson::dmclock::PushPriorityQueue<unsigned int, crimson::qos_simulation::TestRequest>*(
+std::function<bool()>,
+std::function<void(const unsigned int&, std::unique_ptr<crimson::qos_simulation::TestRequest>, crimson::dmclock::PhaseType)>
+)>}’
+to
+‘crimson::qos_simulation::SimulatedServer<crimson::dmclock::PushPriorityQueue<unsigned int, crimson::qos_simulation::TestRequest>, crimson::dmclock::ReqParams, crimson::dmclock::PhaseType, crimson::test_dmc::DmcAccum>::CreateQueueFunc {aka std::function<crimson::dmclock::PushPriorityQueue<unsigned int, crimson::qos_simulation::TestRequest>*(std::function<bool()>, std::function<void(const unsigned int&, std::unique_ptr<crimson::qos_simulation::TestRequest>, const crimson::dmclock::PhaseType&, long unsigned int)>)>}’
