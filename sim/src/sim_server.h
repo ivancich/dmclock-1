@@ -65,7 +65,8 @@ namespace crimson {
       using ClientRespFunc = std::function<void(ClientId,
 						const TestResponse&,
 						const ServerId&,
-						const RespPm&)>;
+						const RespPm&,
+						uint64_t)>;
 
       using ServerAccumFunc = std::function<void(Accum& accumulator,
 						 const RespPm& additional)>;
@@ -201,6 +202,7 @@ namespace crimson {
 	    auto client = front.client;
 	    auto req = std::move(front.request);
 	    auto additional = front.additional;
+	    auto request_cost = front.request_cost;
 	    inner_queue.pop_front();
 
 	    l.unlock();
@@ -211,7 +213,7 @@ namespace crimson {
 
 	    // TODO: rather than assuming this constructor exists, perhaps
 	    // pass in a function that does this mapping?
-	    client_resp_f(client, TestResponse{req->epoch}, id, additional);
+	    client_resp_f(client, TestResponse{req->epoch}, id, additional, request_cost);
 
 	    time_stats(internal_stats.mtx,
 		       internal_stats.request_complete_time,
