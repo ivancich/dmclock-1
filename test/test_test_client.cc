@@ -36,6 +36,7 @@ TEST(test_client, full_bore_timing) {
   sim::TestResponse resp(0);
   dmc::PhaseType resp_params = dmc::PhaseType::priority;
   test::DmcClient* client;
+  const uint64_t request_cost = 1u;
 
   auto start = now();
   client =
@@ -45,7 +46,7 @@ TEST(test_client, full_bore_timing) {
 			     const ClientId& client_id,
 			     const dmc::ReqParams& req_params) {
 			  ++count;
-			  client->receive_response(resp, client_id, resp_params);
+			  client->receive_response(resp, client_id, resp_params, request_cost);
 			},
 			[&] (const uint64_t seed) -> ServerId& {
 			  return server_id;
@@ -76,6 +77,7 @@ TEST(test_client, paused_timing) {
 
   sim::TestResponse resp(0);
   dmc::PhaseType resp_params = dmc::PhaseType::priority;
+  const uint64_t request_cost = 1u;
   test::DmcClient* client;
 
   auto start = now();
@@ -87,7 +89,7 @@ TEST(test_client, paused_timing) {
 			     const dmc::ReqParams& req_params) {
 			  ++count;
 			  if (auto_respond.load()) {
-			    client->receive_response(resp, client_id, resp_params);
+			    client->receive_response(resp, client_id, resp_params, request_cost);
 			  } else {
 			    ++unresponded_count;
 			  }
@@ -107,7 +109,7 @@ TEST(test_client, paused_timing) {
       auto_respond = true;
       // respond to those 50 calls
       for(int i = 0; i < 50; ++i) {
-	client->receive_response(resp, my_client_id, resp_params);
+	client->receive_response(resp, my_client_id, resp_params, 1);
 	--unresponded_count;
       }
     });
