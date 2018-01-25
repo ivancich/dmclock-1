@@ -255,8 +255,7 @@ namespace crimson {
        */
       void track_resp(const S& server_id,
 		      const PhaseType& phase,
-#warning Remove default value of argument?
-		      Counter request_cost = 1) {
+		      Counter request_cost = 1u) {
 	DataGuard g(data_mtx);
 
 	auto it = server_map.find(server_id);

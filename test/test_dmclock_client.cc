@@ -128,7 +128,7 @@ namespace crimson {
 	"other servers";
 
       // RESPONSE
-      st.track_resp(server1, dmc::PhaseType::priority);
+      st.track_resp(server1, dmc::PhaseType::priority, 1u);
 
       auto rp3 = st.get_req_params(server1);
 
@@ -140,7 +140,7 @@ namespace crimson {
 	"other servers";
 
       // RESPONSE
-      st.track_resp(server2, dmc::PhaseType::priority);
+      st.track_resp(server2, dmc::PhaseType::priority, 1u);
 
       auto rp4 = st.get_req_params(server1);
 
@@ -161,7 +161,7 @@ namespace crimson {
 	"other servers";
 
       // RESPONSE
-      st.track_resp(server2, dmc::PhaseType::reservation);
+      st.track_resp(server2, dmc::PhaseType::reservation, 1u);
 
       auto rp6 = st.get_req_params(server1);
 
@@ -172,13 +172,13 @@ namespace crimson {
 	"rho should be 2 with one intervening reservation responses by " <<
 	"another server";
 
-      st.track_resp(server2, dmc::PhaseType::reservation);
-      st.track_resp(server1, dmc::PhaseType::priority);
-      st.track_resp(server2, dmc::PhaseType::priority);
-      st.track_resp(server2, dmc::PhaseType::reservation);
-      st.track_resp(server1, dmc::PhaseType::reservation);
-      st.track_resp(server1, dmc::PhaseType::priority);
-      st.track_resp(server2, dmc::PhaseType::priority);
+      st.track_resp(server2, dmc::PhaseType::reservation, 1u);
+      st.track_resp(server1, dmc::PhaseType::priority, 1u);
+      st.track_resp(server2, dmc::PhaseType::priority, 1u);
+      st.track_resp(server2, dmc::PhaseType::reservation, 1u);
+      st.track_resp(server1, dmc::PhaseType::reservation, 1u);
+      st.track_resp(server1, dmc::PhaseType::priority, 1u);
+      st.track_resp(server2, dmc::PhaseType::priority, 1u);
 
       auto rp7 = st.get_req_params(server1);
 
@@ -245,7 +245,7 @@ namespace crimson {
 	"other servers";
 
       // RESPONSE
-      st.track_resp(server1, dmc::PhaseType::priority);
+      st.track_resp(server1, dmc::PhaseType::priority, 1u);
 
       auto rp3 = st.get_req_params(server1);
 
@@ -257,7 +257,7 @@ namespace crimson {
 	"other servers";
 
       // RESPONSE
-      st.track_resp(server2, dmc::PhaseType::priority);
+      st.track_resp(server2, dmc::PhaseType::priority, 1u);
 
       auto rp4 = st.get_req_params(server1);
 
@@ -278,7 +278,7 @@ namespace crimson {
 	"other servers";
 
       // RESPONSE
-      st.track_resp(server2, dmc::PhaseType::reservation);
+      st.track_resp(server2, dmc::PhaseType::reservation, 1u);
 
       auto rp6 = st.get_req_params(server1);
 
@@ -289,13 +289,13 @@ namespace crimson {
 	"rho should be 2 with one intervening reservation responses by " <<
 	"another server";
 
-      st.track_resp(server2, dmc::PhaseType::reservation);
-      st.track_resp(server1, dmc::PhaseType::priority);
-      st.track_resp(server2, dmc::PhaseType::priority);
-      st.track_resp(server2, dmc::PhaseType::reservation);
-      st.track_resp(server1, dmc::PhaseType::reservation);
-      st.track_resp(server1, dmc::PhaseType::priority);
-      st.track_resp(server2, dmc::PhaseType::priority);
+      st.track_resp(server2, dmc::PhaseType::reservation, 1u);
+      st.track_resp(server1, dmc::PhaseType::priority, 1u);
+      st.track_resp(server2, dmc::PhaseType::priority, 1u);
+      st.track_resp(server2, dmc::PhaseType::reservation, 1u);
+      st.track_resp(server1, dmc::PhaseType::reservation, 1u);
+      st.track_resp(server1, dmc::PhaseType::priority, 1u);
+      st.track_resp(server2, dmc::PhaseType::priority, 1u);
 
       auto rp7 = st.get_req_params(server1);
 
@@ -357,14 +357,14 @@ namespace crimson {
       EXPECT_EQ(1u, rp2.delta);
       EXPECT_EQ(1u, rp2.rho);
 
-      st.track_resp(server1, dmc::PhaseType::priority);
+      st.track_resp(server1, dmc::PhaseType::priority, 1u);
 
       auto rp3 = st.get_req_params(server1);
 
       EXPECT_EQ(1u, rp3.delta);
       EXPECT_EQ(1u, rp3.rho);
 
-      st.track_resp(server2, dmc::PhaseType::priority);
+      st.track_resp(server2, dmc::PhaseType::priority, 1u);
 
       auto rp4 = st.get_req_params(server1);
 
@@ -376,7 +376,7 @@ namespace crimson {
       EXPECT_EQ(1u, rp5.delta);
       EXPECT_EQ(1u, rp5.rho);
 
-      st.track_resp(server2, dmc::PhaseType::reservation);
+      st.track_resp(server2, dmc::PhaseType::reservation, 1u);
 
       auto rp6 = st.get_req_params(server1);
 
@@ -385,13 +385,13 @@ namespace crimson {
 
       // auto rp6_b = st.get_req_params(server2);
 
-      st.track_resp(server2, dmc::PhaseType::reservation);
-      st.track_resp(server1, dmc::PhaseType::priority);
-      st.track_resp(server2, dmc::PhaseType::priority);
-      st.track_resp(server2, dmc::PhaseType::reservation);
-      st.track_resp(server1, dmc::PhaseType::reservation);
-      st.track_resp(server1, dmc::PhaseType::priority);
-      st.track_resp(server2, dmc::PhaseType::priority);
+      st.track_resp(server2, dmc::PhaseType::reservation, 1u);
+      st.track_resp(server1, dmc::PhaseType::priority, 1u);
+      st.track_resp(server2, dmc::PhaseType::priority, 1u);
+      st.track_resp(server2, dmc::PhaseType::reservation, 1u);
+      st.track_resp(server1, dmc::PhaseType::reservation, 1u);
+      st.track_resp(server1, dmc::PhaseType::priority, 1u);
+      st.track_resp(server2, dmc::PhaseType::priority, 1u);
 
       auto rp7 = st.get_req_params(server1);
 
