@@ -160,7 +160,7 @@ namespace crimson {
 		   internal_stats.add_request_time,
 		   [&](){
 		     priority_queue->add_request(std::move(request),
-						 client_id, req_params);
+						 client_id, req_params, 1u);
 		   });
 	count_stats(internal_stats.mtx,
 		    internal_stats.add_request_count);

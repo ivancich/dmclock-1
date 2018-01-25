@@ -97,10 +97,12 @@ int main(int argc, char* argv[]) {
     [&simulation](ClientId client_id,
 		  const sim::TestResponse& resp,
 		  const ServerId& server_id,
-		  const ssched::NullData& resp_params) {
+		  const ssched::NullData& resp_params,
+		  uint64_t request_cost) {
     simulation->get_client(client_id).receive_response(resp,
 						       server_id,
-						       resp_params);
+						       resp_params,
+						       request_cost);
   };
 
   test::CreateQueueF create_queue_f =
