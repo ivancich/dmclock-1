@@ -57,8 +57,8 @@ namespace crimson {
       }
 
       inline ReqParams prepare_req(Counter& the_delta, Counter& the_rho) {
-	Counter delta_out = 1 + the_delta - delta_prev_req - my_delta;
-	Counter rho_out = 1 + the_rho - rho_prev_req - my_rho;
+	Counter delta_out = the_delta - delta_prev_req - my_delta;
+	Counter rho_out = the_rho - rho_prev_req - my_rho;
 	delta_prev_req = the_delta;
 	rho_prev_req = the_rho;
 	my_delta = 0;

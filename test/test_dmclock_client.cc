@@ -362,34 +362,34 @@ namespace crimson {
 
       auto rp2 = st.get_req_params(server1);
 
-      EXPECT_EQ(1u, rp2.delta);
-      EXPECT_EQ(1u, rp2.rho);
+      EXPECT_EQ(0u, rp2.delta);
+      EXPECT_EQ(0u, rp2.rho);
 
       st.track_resp(server1, dmc::PhaseType::priority, 1u);
 
       auto rp3 = st.get_req_params(server1);
 
-      EXPECT_EQ(1u, rp3.delta);
-      EXPECT_EQ(1u, rp3.rho);
+      EXPECT_EQ(0u, rp3.delta);
+      EXPECT_EQ(0u, rp3.rho);
 
       st.track_resp(server2, dmc::PhaseType::priority, 1u);
 
       auto rp4 = st.get_req_params(server1);
 
-      EXPECT_EQ(2u, rp4.delta);
-      EXPECT_EQ(1u, rp4.rho);
+      EXPECT_EQ(1u, rp4.delta);
+      EXPECT_EQ(0u, rp4.rho);
 
       auto rp5 = st.get_req_params(server1);
 
-      EXPECT_EQ(1u, rp5.delta);
-      EXPECT_EQ(1u, rp5.rho);
+      EXPECT_EQ(0u, rp5.delta);
+      EXPECT_EQ(0u, rp5.rho);
 
       st.track_resp(server2, dmc::PhaseType::reservation, 1u);
 
       auto rp6 = st.get_req_params(server1);
 
-      EXPECT_EQ(2u, rp6.delta);
-      EXPECT_EQ(2u, rp6.rho);
+      EXPECT_EQ(1u, rp6.delta);
+      EXPECT_EQ(1u, rp6.rho);
 
       // auto rp6_b = st.get_req_params(server2);
 
@@ -403,22 +403,22 @@ namespace crimson {
 
       auto rp7 = st.get_req_params(server1);
 
-      EXPECT_EQ(5u, rp7.delta);
-      EXPECT_EQ(3u, rp7.rho);
+      EXPECT_EQ(4u, rp7.delta);
+      EXPECT_EQ(2u, rp7.rho);
 
       auto rp7b = st.get_req_params(server2);
 
-      EXPECT_EQ(4u, rp7b.delta);
-      EXPECT_EQ(2u, rp7b.rho);
+      EXPECT_EQ(3u, rp7b.delta);
+      EXPECT_EQ(1u, rp7b.rho);
 
       auto rp8 = st.get_req_params(server1);
 
-      EXPECT_EQ(1u, rp8.delta);
-      EXPECT_EQ(1u, rp8.rho);
+      EXPECT_EQ(0u, rp8.delta);
+      EXPECT_EQ(0u, rp8.rho);
 
       auto rp8b = st.get_req_params(server2);
-      EXPECT_EQ(1u, rp8b.delta);
-      EXPECT_EQ(1u, rp8b.rho);
+      EXPECT_EQ(0u, rp8b.delta);
+      EXPECT_EQ(0u, rp8b.rho);
     } // TEST
 
   } // namespace dmclock

@@ -36,7 +36,7 @@ namespace crimson {
     };
 
     using DmcQueue = dmc::PushPriorityQueue<ClientId,sim::TestRequest>;
-    using DmcServiceTracker = dmc::ServiceTracker<ServerId,dmc::SimpleTracker>;
+    using DmcServiceTracker = dmc::ServiceTracker<ServerId,dmc::OrigTracker>;
 
     using DmcServer = sim::SimulatedServer<DmcQueue,
 					   dmc::ReqParams,

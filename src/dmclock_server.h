@@ -1262,7 +1262,6 @@ namespace crimson {
       }
 
 
-
       inline void add_request_time(R&& request,
 				   const C& client_id,
 				   const ReqParams& req_params,
