@@ -744,6 +744,7 @@ namespace crimson {
     }
 
 
+    // NB: this test has failures when run under valgrind
     TEST(dmclock_server_pull, dynamic_cli_info_f) {
       using ClientId = int;
       using Queue = dmc::PullPriorityQueue<ClientId,Request,true>;
@@ -802,9 +803,9 @@ namespace crimson {
       }
 
       EXPECT_EQ(2, c1_count) <<
-	"before: one-third of request should have come from first client";
+	"before: one-third of requests should have come from first client";
       EXPECT_EQ(4, c2_count) <<
-	"before: two-thirds of request should have come from second client";
+	"before: two-thirds of requests should have come from second client";
 
       std::chrono::seconds dura(1);
       std::this_thread::sleep_for(dura);
@@ -834,9 +835,9 @@ namespace crimson {
       }
 
       EXPECT_EQ(6, c1_count) <<
-	"after: one-third of request should have come from first client";
+	"after: three-fourths of requests should have come from first client";
       EXPECT_EQ(2, c2_count) <<
-	"after: two-thirds of request should have come from second client";
+	"after: one-fourth of requests should have come from second client";
     }
 
 
